@@ -1,8 +1,8 @@
 <?php
 $this->breadcrumbs=array(
-	'Users'=>array('index'),
+	'用户管理'=>array('index'),
 	$model->name=>array('view','id'=>$model->id),
-	'Update',
+	'更新',
 );
 
 	$this->menu=array(
@@ -13,6 +13,11 @@ $this->breadcrumbs=array(
 	);
 	?>
 
-	<h1>Update User <?php echo $model->id; ?></h1>
-
-<?php echo $this->renderPartial('_form',array('model'=>$model)); ?>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        更新用户 #<?php echo $model->id; ?>
+    </div>
+    <div class="panel-body">
+    <?php echo $this->renderPartial('_form', array('model'=>$model)); ?>
+    </div>
+</div>

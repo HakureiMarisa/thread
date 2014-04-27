@@ -39,6 +39,7 @@ class ThreadContent extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('content', 'required'),
+		   array('content', 'length', 'min'=>15), 
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('thread_id, content', 'safe', 'on'=>'search'),
@@ -64,7 +65,7 @@ class ThreadContent extends CActiveRecord
 	{
 		return array(
 			'thread_id' => 'Thread',
-			'content' => 'Content',
+			'content' => '内容',
 		);
 	}
 

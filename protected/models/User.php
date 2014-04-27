@@ -8,6 +8,9 @@
  * @property string $name
  * @property string $password
  * @property string $email
+ * @property string $is_locked
+ * @property string $last_login
+ * 
  */
 class User extends CActiveRecord
 {
@@ -39,15 +42,16 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, password, email', 'required'),
+			array('name, email', 'required'),
+		    array('password', 'required', 'except'=>'update'),
 			array('name', 'length', 'max'=>50),
 		    array('name', 'unique'),
 		    array('email', 'email'),
 			array('password, email', 'length', 'max'=>64),
-		    array('password1', 'compare', 'compareAttribute'=>'password', 'on'=>'insert'),
+		    array('password1', 'compare', 'compareAttribute'=>'password', 'on'=>'insert, update'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, password, email', 'safe', 'on'=>'search'),
+			array('id, name, password, email, is_locked, last_login', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,6 +77,8 @@ class User extends CActiveRecord
 			'password' => '密码',
 		    'password1' => '确认密码',
 			'email' => 'Email',
+		    'last_login' => '上次登录时间',
+		    'is_locked' => '禁闭',
 		);
 	}
 
@@ -89,7 +95,7 @@ class User extends CActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('password',$this->password,true);
+		//$criteria->compare('password',$this->password,true);
 		$criteria->compare('email',$this->email,true);
 
 		return new CActiveDataProvider($this, array(
@@ -98,9 +104,10 @@ class User extends CActiveRecord
 	}
 	
 	protected function beforeSave(){
-		if ($this->isNewRecord) {
+	    $this->password = md5($this->password);
+		/*if ($this->isNewRecord) {
 			$this->password = md5($this->password);
-		}
+		}*/
 		return parent::beforeSave();
 	}
 }

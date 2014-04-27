@@ -12,10 +12,12 @@
 		    theme: 'monokai'
 		  }
 		});
-		$('#{$form}').submit(function(){
+		
+		$('#df{$form}').submit(function(){
 			var form = $(this);
-			if($('.editor').code() == '<p><br></p>'){
-			    
+			 
+			if($('.editor').val() == '<p><br></p>'){
+			    console.log('zzz');
                 return false;
             }
 			$.post($(this).attr('action'), $(this).serialize(), function(ret){

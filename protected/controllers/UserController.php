@@ -16,7 +16,7 @@ class UserController extends Controller
     public function filters()
     {
         return array(
-            'accessControl' // perform access control for CRUD operations
+            //'accessControl' // perform access control for CRUD operations
         );
     }
 
@@ -114,7 +114,7 @@ class UserController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->loadModel($id);
+        $model = $this->loadModel('User', $id);
         
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
@@ -135,64 +135,18 @@ class UserController extends Controller
     }
 
     /**
-     * Deletes a particular model. If deletion is successful, the browser will be redirected to the 'admin' page.
-     * 
-     * @param integer $id
-     *            the ID of the model to be deleted
-     */
-    public function actionDelete($id)
-    {
-        if (Yii::app()->request->isPostRequest) {
-            // we only allow deletion via POST request
-            $this->loadModel($id)->delete();
-            
-            // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-            if (! isset($_GET['ajax']))
-                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array(
-                    'admin'
-                ));
-        } else
-            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
-    }
-
-    /**
      * Lists all models.
      */
     public function actionIndex()
-    {
-        $dataProvider = new CActiveDataProvider('User');
-        $this->render('index', array(
-            'dataProvider' => $dataProvider
-        ));
-    }
-
-    /**
-     * Manages all models.
-     */
-    public function actionAdmin()
     {
         $model = new User('search');
         $model->unsetAttributes(); // clear any default values
         if (isset($_GET['User']))
             $model->attributes = $_GET['User'];
         
-        $this->render('admin', array(
+        $this->render('index', array(
             'model' => $model
         ));
-    }
-
-    /**
-     * Returns the data model based on the primary key given in the GET variable. If the data model is not found, an HTTP exception will be raised.
-     * 
-     * @param
-     *            integer the ID of the model to be loaded
-     */
-    public function loadModeld($id)
-    {
-        $model = User::model()->findByPk($id);
-        if ($model === null)
-            throw new CHttpException(404, 'The requested page does not exist.');
-        return $model;
     }
 
     /**
@@ -219,5 +173,24 @@ class UserController extends Controller
     		}
     	}
     	$this->render('register', array('model'=>$user));
+    }
+    
+    public function actionLock($id, $lock){
+        if (Yii::app()->request->isPostRequest) {
+            // we only allow deletion via POST request
+            $user = $this->loadModel('User', $id);
+            if ($lock) {
+            	$lock = 'Y';
+            }else{
+                $lock = null;
+            }
+            $user->saveAttributes(array('is_locked'=>$lock));
+            // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+            if (! isset($_GET['ajax']))
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array(
+                    'index'
+                ));
+        } else
+            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
     }
 }

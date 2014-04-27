@@ -1,7 +1,7 @@
 
 $(function(){
     $("#gotop").click(function(e) {
-    	$('html').animate({scrollTop:0},1000);
+    	$('body, html').animate({scrollTop:0},1000);
     });
     
     $(window).scroll(function(e) {
@@ -27,4 +27,20 @@ $(function(){
 			});			
 	    }              
 	}); 
+	
+	$.extend({    
+		formAjaxSubmit: function(form, data, hasError, list){
+			if(!hasError){
+				$.post(form.attr('action'), form.serialize(), function(ret){
+					ret = $.parseJSON(ret);
+					if(ret.result){
+						$.fn.yiiListView.update(list);
+					}else{
+						form.showFormError(ret);
+					}
+				});
+			}
+			return false;
+		}
+    });
 });

@@ -14,13 +14,15 @@
     <div class="panel-body">
         <?php 
         $c = new CDbCriteria();
-        $c->compare('create_by', $model->id);
-        $c->order = 'create_on DESC';
+        $c->compare('t.create_by', $model->id);
+        $c->order = 't.create_on DESC';
+        $c->with = array('creater');
+        $c->together = true;
     	$this->widget('bootstrap.widgets.TbListView', array(
     			'dataProvider' => new CActiveDataProvider('Topic', array('criteria'=>$c, 'pagination'=>array(
                     'pageSize'=>5,
                 ),)),
-    			'itemView' => '//topic/_topic',
+    			'itemView' => '_last_topics',
     			'id'=>'topic-list',
     			'template'=>'{items}',
     			'htmlOptions'=>array('class'=>false),
@@ -32,16 +34,16 @@
     <div class="panel-body">
         <?php 
         $c = new CDbCriteria();
-        $c->compare('t.create_by', "<>".$model->id);
-        $c->with = array('threads');
+        $c->compare('t.create_by', $model->id);
+        $c->with = array('topic', 'content');
         $c->together = true;
-        $c->compare('threads.create_by', $model->id);
-        $c->order = 'threads.create_on DESC';
+        $c->compare('topic.create_by', "<>".$model->id);
+        $c->order = 't.create_on DESC';
     	$this->widget('bootstrap.widgets.TbListView', array(
-    			'dataProvider' => new CActiveDataProvider('Topic', array('criteria'=>$c, 'pagination'=>array(
+    			'dataProvider' => new CActiveDataProvider('Thread', array('criteria'=>$c, 'pagination'=>array(
                     'pageSize'=>5,
                 ),)),
-    			'itemView' => '//topic/_topic',
+    			'itemView' => '_last_reply_topics',
     			'id'=>'topic-list',
     			'template'=>'{items}',
     			'htmlOptions'=>array('class'=>false),

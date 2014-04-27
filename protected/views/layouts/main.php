@@ -15,6 +15,13 @@
 <?php $this->widget('bootstrap.widgets.TbNavbar',array(
 		'type'=>'inverse',
 		'items'=>array(
+		    array(
+		        'class' => 'bootstrap.widgets.TbMenu',
+		        'items' => array(
+		            array('label'=>'用户管理', 'url'=>array('/user/index'), 'visible'=>!Yii::app()->user->isGuest),
+
+		        ),
+		    ),
 			array(
 				'class' => 'bootstrap.widgets.TbMenu',
 				'htmlOptions'=>array('class'=>'pull-right'),

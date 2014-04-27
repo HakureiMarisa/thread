@@ -61,6 +61,7 @@ class Topic extends ActiveRecord
 			'threads' => array(self::HAS_MANY, 'Thread', 'topic_id'),
 			'thread_connts' => array(self::STAT, 'Thread', 'topic_id'),
 			'creater' => array(self::BELONGS_TO, 'User', 'create_by'),
+		    'last_thread' => array(self::HAS_ONE, 'Thread', 'topic_id', 'order'=>'last_thread.create_on DESC, t.create_on DESC'),
 		);
 	}
 
@@ -71,7 +72,7 @@ class Topic extends ActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'title' => 'Title',
+			'title' => '标题',
 			'create_on' => 'Create On',
 			'create_by' => 'Create By',
 		);
@@ -92,10 +93,10 @@ class Topic extends ActiveRecord
 		$criteria->compare('title',$this->title,true);
 		$criteria->compare('create_on',$this->create_on);
 		$criteria->compare('create_by',$this->create_by);
-		$criteria->select = array('id', 'title', 'create_on', 'create_by', 'visits');
-		$criteria->with = array('threads');
+		//$criteria->select = array('id', 'title', 'create_on', 'create_by', 'visits');
+		$criteria->with = array('last_thread', 'last_thread.discussant', 'creater');
 		$criteria->together = true;
-		$criteria->order = 'threads.create_on DESC, t.create_on DESC';
+		//$criteria->order = 'threads.create_on DESC, t.create_on DESC';
 		
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
