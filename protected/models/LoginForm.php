@@ -51,8 +51,11 @@ class LoginForm extends CFormModel
 		if(!$this->hasErrors())
 		{
 			$this->_identity=new UserIdentity($this->username,$this->password);
-			if(!$this->_identity->authenticate())
-				$this->addError('password','Incorrect username or password.');
+			if(in_array($this->_identity->authenticate(), array(1, 2))){
+				$this->addError('password','用户名或密码错误。');
+			} elseif ($this->_identity->authenticate() == UserIdentity::ERROR_IS_LOCKED){
+			    $this->addError('username','您已被关禁闭了。');
+			}
 		}
 	}
 

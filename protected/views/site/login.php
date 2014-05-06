@@ -24,7 +24,8 @@
         			'buttonType'=>'submit',
         			'type'=>'primary',
         			'label'=>'登陆',
-        		)); ?>
+    		)); ?>
+    		<?php echo CHtml::link("忘记用户名或密码？", array('user/forget')) ?>
         </div>
 
 <?php $this->endWidget(); ?>

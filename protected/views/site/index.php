@@ -16,6 +16,10 @@
 </div>
 <div class="panel panel-default" id="form">
 	<div class="panel-body">
-		<?php $this->renderPartial("//topic/_form")?>
+        <?php if (!getApp()->user->isGuest):?>
+        <?php $this->renderPartial("//topic/_form")?>
+        <?php else:?>
+        <?php echo CHtml::link('登陆发表', array('site/login'), array('class'=>'btn btn-default'))?>
+        <?php endif;?>		
 	</div>
 </div>

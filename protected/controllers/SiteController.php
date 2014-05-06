@@ -26,7 +26,7 @@ class SiteController extends Controller
 	 * when an action is not explicitly requested by users.
 	 */
 	public function actionIndex()
-	{
+	{	    
 		$model = new Topic('search');
 		if (isset($_GET['Topic'])) {
 			$model->attributes = $_GET['Topic'];

@@ -165,14 +165,69 @@ class UserController extends Controller
     
     public function actionRegister(){
         $this->layout = '//layouts/column1';
+        
     	$user = new User();
     	if (isset($_POST['User'])) {
     		$user->attributes = $_POST['User'];
+    		$user->last_login = new CDbExpression('NOW()');
     		if ($user->save()) {
+    		    $identity=new UserIdentity($user->name, $_POST['User']['password']);
+    		    $identity->id = $user->id;
+		        Yii::app()->user->login($identity);
     			$this->redirect(getApp()->user->returnUrl);
     		}
     	}
     	$this->render('register', array('model'=>$user));
+    }
+    
+    public function actionForget(){
+        $this->layout = '//layouts/column1';
+        $user = new User();       
+        if (isset($_POST['User'])) {
+            $user->attributes = $_POST['User'];
+            if ($forgeter = $user->findByAttributes($_POST['User'])) {
+                $resetkey = uniqid();
+                $resetUrl = getApp()->createAbsoluteUrl('user/reset', array('resetkey'=>$resetkey));
+                $forgeter->saveAttributes(array('reset_key' => $resetkey));
+                $message = array(
+                    'html' => "<p>您的用户名为：{$forgeter->name}</p><p>点击 <a href='$resetUrl'>链接</a> 进入重置密码页面</p>",
+                    'subject' => '忘记用户名或密码',
+                    'from_email' => getParams('adminEmail'),
+                    'from_name' => '你亲爱的杰杰',
+                    'to' => array(
+                        array(
+                            'email' => $forgeter->email,
+                            'name' => $forgeter->name,
+                            'type' => 'to'
+                        )
+                    ),
+                    'headers' => array('Reply-To' => getParams('adminEmail')),           
+                );
+                getApp()->mandrill->messages->send($message);
+                getApp()->user->setFlash('forget', '邮件已发送，请注意查看您的邮箱。');
+                $this->refresh();
+            }else{
+                $user->addError('email', '请核实您注册的邮箱。');
+            }
+        }
+        $this->render('forget', array('model'=>$user));
+    }
+    
+    public function actionReset($resetkey){
+        $this->layout = '//layouts/column1';
+    	if ($user = User::model()->findByAttributes(array('reset_key'=>$resetkey))) {
+    	    $user->password = '';
+    	    if (isset($_POST['User'])) {
+    	        $user->attributes = $_POST['User'];
+    	        if ($user->save()){
+    	            $identity=new UserIdentity($user->name, $_POST['User']['password']);
+    	            $identity->id = $user->id;
+    	            Yii::app()->user->login($identity);
+    	        	$this->redirect(getApp()->user->returnUrl);
+    	        }
+    	    } 	    
+    		$this->render('reset', array('model'=>$user));
+    	}
     }
     
     public function actionLock($id, $lock){

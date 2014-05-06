@@ -79,17 +79,22 @@ return array(
 					'class'=>'CFileLogRoute',
 					'levels'=>'error, warning',
 				),
+				/*
 				array(
 						'class'=>'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
 						'ipFilters'=>array('127.0.0.1'),
 				),
 				// uncomment the following to show log messages on web pages
-				/*
+				
 				array(
 					'class'=>'CWebLogRoute',
 				),
 				*/
 			),
+		),
+		'mandrill'=>array(
+		    'class'=>'ext.mandrill.src.Mandrill',
+		    'apikey'=>'mebWn8tUBGuKAdsABI-qAg',
 		),
 	),
 
@@ -97,6 +102,6 @@ return array(
 	// using Yii::app()->params['paramName']
 	'params'=>array(
 		// this is used in contact page
-		'adminEmail'=>'webmaster@example.com',
+		'adminEmail'=>'377289825@qq.com',
 	),
 );

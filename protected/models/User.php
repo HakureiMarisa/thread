@@ -10,6 +10,7 @@
  * @property string $email
  * @property string $is_locked
  * @property string $last_login
+ * @property string $reset_key
  * 
  */
 class User extends CActiveRecord
@@ -49,6 +50,7 @@ class User extends CActiveRecord
 		    array('email', 'email'),
 			array('password, email', 'length', 'max'=>64),
 		    array('password1', 'compare', 'compareAttribute'=>'password', 'on'=>'insert, update'),
+		    array('reset_key', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, name, password, email, is_locked, last_login', 'safe', 'on'=>'search'),
@@ -109,5 +111,26 @@ class User extends CActiveRecord
 			$this->password = md5($this->password);
 		}*/
 		return parent::beforeSave();
+	}
+	
+	protected function afterSave(){
+		parent::beforeSave();
+		if ($this->isNewRecord) {
+			$message = array(
+                'html' => '<p>欢迎</p>',
+                'subject' => '欢迎欢迎，热烈欢迎！',
+                'from_email' => getParams('adminEmail'),
+                'from_name' => '你亲爱的杰杰',
+                'to' => array(
+                    array(
+                        'email' => $this->email,
+                        'name' => $this->name,
+                        'type' => 'to'
+                    )
+                ),
+                'headers' => array('Reply-To' => getParams('adminEmail')),           
+            );
+            getApp()->mandrill->messages->send($message);
+		}
 	}
 }
