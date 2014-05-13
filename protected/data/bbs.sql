@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50516
 File Encoding         : 65001
 
-Date: 2014-04-27 18:02:02
+Date: 2014-05-13 08:24:27
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -82,5 +82,6 @@ CREATE TABLE `user` (
   `email` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `is_locked` enum('Y') COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
+  `reset_key` varchar(23) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
